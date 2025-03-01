@@ -84,4 +84,6 @@ Have questions, suggestions, or ideas? Feel free to open an issue or join our di
 ---
 
 ## 📄 Version
-Version 0.0.1
+App Version 0.0.1
+Architecture Version 1.1
+Code Style 0.2.1-proto
