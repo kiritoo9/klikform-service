@@ -1,0 +1,28 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "KlikForm Service API Documentation",
+        "title": "KlikForm Service",
+        "contact": {},
+        "version": "0.1"
+    },
+    "paths": {
+        "/welcome": {
+            "get": {
+                "description": "Welcome entry point to test API run",
+                "tags": [
+                    "Welcome"
+                ],
+                "summary": "Welcome point",
+                "responses": {
+                    "200": {
+                        "description": "Welcome message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

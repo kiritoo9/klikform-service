@@ -1,0 +1,18 @@
+info:
+  contact: {}
+  description: KlikForm Service API Documentation
+  title: KlikForm Service
+  version: "0.1"
+paths:
+  /welcome:
+    get:
+      description: Welcome entry point to test API run
+      responses:
+        "200":
+          description: Welcome message
+          schema:
+            type: string
+      summary: Welcome point
+      tags:
+      - Welcome
+swagger: "2.0"
