@@ -19,13 +19,14 @@ func main() {
 	mux := http.NewServeMux()
 
 	// load necessary function that needs to call when app init
-	// environments - database connections - swaggers
+	// environments - database connections - migrations - seeders
 	conf := configs.LoadConfig()
 	db, errDB := postgresql.OpenDB()
 	if errDB != nil {
 		log.Fatal("Something wrong when trying to open connection", errDB)
 	}
 	postgresql.Migrations(db)
+	postgresql.Seeders(db)
 
 	// regist routes
 	welcomeroutes.WelcomeRoutes(mux)
