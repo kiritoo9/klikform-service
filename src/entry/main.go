@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"klikform/src/infras/configs"
 	"klikform/src/infras/databases/postgresql"
+	authroutes "klikform/src/interfaces/v1/routes/auths"
 	welcomeroutes "klikform/src/interfaces/v1/routes/welcomes"
 
 	"log"
@@ -30,6 +31,7 @@ func main() {
 
 	// regist routes
 	welcomeroutes.WelcomeRoutes(mux)
+	authroutes.AuthRoutes(mux)
 
 	// regist swagger
 	// for notes the route /swagger/doc.json is default json file loaded by swagger

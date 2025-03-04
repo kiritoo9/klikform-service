@@ -1,17 +1,83 @@
+definitions:
+  klikform_src_interfaces_v1_schemas_auths.AuthBodySchema:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  klikform_src_interfaces_v1_schemas_auths.AuthResponseSchema:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  schemas.ResponseSchema:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+    type: object
+  schemas.WelcomeResponseSchema:
+    properties:
+      about:
+        type: string
+      version:
+        type: string
+    type: object
 info:
   contact: {}
   description: KlikForm Service API Documentation
   title: KlikForm Service
   version: "0.1"
 paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      description: Get access token by login
+      parameters:
+      - description: Auth body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/klikform_src_interfaces_v1_schemas_auths.AuthBodySchema'
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            allOf:
+            - $ref: '#/definitions/schemas.ResponseSchema'
+            - properties:
+                data:
+                  $ref: '#/definitions/klikform_src_interfaces_v1_schemas_auths.AuthResponseSchema'
+              type: object
+        "400":
+          description: Failure response
+          schema:
+            $ref: '#/definitions/schemas.ResponseSchema'
+      summary: Authentication
+      tags:
+      - Auth
   /welcome:
     get:
       description: Welcome entry point to test API run
       responses:
         "200":
-          description: Welcome message
+          description: Successful response
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/schemas.ResponseSchema'
+            - properties:
+                data:
+                  $ref: '#/definitions/schemas.WelcomeResponseSchema'
+              type: object
       summary: Welcome point
       tags:
       - Welcome
