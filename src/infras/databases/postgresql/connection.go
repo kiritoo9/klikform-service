@@ -4,24 +4,38 @@ import (
 	"fmt"
 	"klikform/src/infras/configs"
 	"log"
+	"sync"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func OpenDB() (*gorm.DB, error) {
-	configs := configs.LoadConfig()
+var (
+	DB   *gorm.DB
+	once sync.Once
+)
 
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		configs.DB_HOST, configs.DB_USER, configs.DB_PASS, configs.DB_NAME, configs.DB_PORT,
-	)
+func OpenDB() {
+	once.Do(func() {
+		configs := configs.LoadConfig()
 
-	db, err := gorm.Open(postgres.Open((dsn)), &gorm.Config{})
-	if err != nil {
-		log.Println("Failed to connect database", err)
-		return nil, err
-	}
+		dsn := fmt.Sprintf(
+			"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+			configs.DB_HOST, configs.DB_USER, configs.DB_PASS, configs.DB_NAME, configs.DB_PORT,
+		)
 
-	return db, nil
+		var err error
+		DB, err = gorm.Open(postgres.Open((dsn)), &gorm.Config{})
+		if err != nil {
+			log.Fatal("Failed to connect database", err)
+		}
+
+		sqlDB, err := DB.DB()
+		if err != nil {
+			log.Fatal("Failed to get database instance", err)
+		}
+		sqlDB.SetMaxOpenConns(100)
+		sqlDB.SetMaxIdleConns(50)
+		log.Println("Database connected successfully")
+	})
 }

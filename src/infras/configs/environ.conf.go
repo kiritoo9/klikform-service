@@ -18,7 +18,7 @@ type Configs struct {
 	DB_USER string
 	DB_PASS string
 
-	JWT_SECRET string
+	JWT_SECRET []byte
 }
 
 func LoadConfig() *Configs {
@@ -45,6 +45,6 @@ func LoadConfig() *Configs {
 		DB_USER: os.Getenv("DB_USER"),
 		DB_PASS: os.Getenv("DB_PASS"),
 
-		JWT_SECRET: os.Getenv("JWT_SECRET"),
+		JWT_SECRET: []byte(os.Getenv("JWT_SECRET")),
 	}
 }

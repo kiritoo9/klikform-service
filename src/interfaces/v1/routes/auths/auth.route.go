@@ -18,7 +18,7 @@ import (
 // @Router       /auth [post]
 func AuthRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/auth", middlewares.Apply(
-		authcontrollers.AuthController,
+		authcontrollers.Login,
 		middlewarecomponents.Method("POST"),
 	))
 }

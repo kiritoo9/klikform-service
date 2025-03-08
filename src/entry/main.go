@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"klikform/src/infras/configs"
 	"klikform/src/infras/databases/postgresql"
+	"klikform/src/infras/databases/postgresql/migrations"
+	"klikform/src/infras/databases/postgresql/seeders"
 	authroutes "klikform/src/interfaces/v1/routes/auths"
 	welcomeroutes "klikform/src/interfaces/v1/routes/welcomes"
 
-	"log"
 	"net/http"
 
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -22,12 +23,9 @@ func main() {
 	// load necessary function that needs to call when app init
 	// environments - database connections - migrations - seeders
 	conf := configs.LoadConfig()
-	db, errDB := postgresql.OpenDB()
-	if errDB != nil {
-		log.Fatal("Something wrong when trying to open connection", errDB)
-	}
-	postgresql.Migrations(db)
-	postgresql.Seeders(db)
+	postgresql.OpenDB() // run database connection
+	migrations.Migrations()
+	seeders.Seeders()
 
 	// regist routes
 	welcomeroutes.WelcomeRoutes(mux)

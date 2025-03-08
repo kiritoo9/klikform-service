@@ -1,16 +1,19 @@
-package postgresql
+package migrations
 
 import (
 	"klikform/src/applications/models"
+	"klikform/src/infras/databases/postgresql"
 	"log"
-
-	"gorm.io/gorm"
 )
 
-func Migrations(db *gorm.DB) {
+func Migrations() {
 	// load all data-models here from migrations/ directory
 	// it's NOT AUTOMATIC, so you need to add each models
-	err := db.AutoMigrate(
+	if postgresql.DB == nil {
+		log.Fatal("Database not initialized")
+	}
+
+	err := postgresql.DB.AutoMigrate(
 		&models.Users{},
 		&models.Roles{},
 		&models.UserRoles{},
