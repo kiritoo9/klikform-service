@@ -1,10 +1,16 @@
 {
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
     "swagger": "2.0",
     "info": {
-        "description": "KlikForm Service API Documentation",
-        "title": "KlikForm Service",
+        "description": "Klikform API Service",
+        "title": "KlikForm API",
         "contact": {},
-        "version": "0.1"
+        "version": "1.0"
     },
     "paths": {
         "/auth": {
@@ -51,6 +57,31 @@
                         "description": "Failure response",
                         "schema": {
                             "$ref": "#/definitions/schemas.ResponseSchema"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles": {
+            "get": {
+                "description": "List of role available",
+                "tags": [
+                    "Master - Roles"
+                ],
+                "summary": "Role List",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Failure response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -134,5 +165,17 @@
                 }
             }
         }
-    }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "BearerAuth": []
+        }
+    ]
 }

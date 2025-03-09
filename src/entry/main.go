@@ -7,6 +7,7 @@ import (
 	"klikform/src/infras/databases/postgresql/migrations"
 	"klikform/src/infras/databases/postgresql/seeders"
 	authroutes "klikform/src/interfaces/v1/routes/auths"
+	masterroutes "klikform/src/interfaces/v1/routes/masters"
 	welcomeroutes "klikform/src/interfaces/v1/routes/welcomes"
 
 	"net/http"
@@ -27,13 +28,28 @@ func main() {
 	migrations.Migrations()
 	seeders.Seeders()
 
-	// regist routes
+	// regist initiate routes
 	welcomeroutes.WelcomeRoutes(mux)
 	authroutes.AuthRoutes(mux)
+
+	// regist master routes
+	masterroutes.RoleRoutes(mux)
 
 	// regist swagger
 	// for notes the route /swagger/doc.json is default json file loaded by swagger
 	// I change it into ./docs/swagger.json for custom path
+	// @title        KlikForm API
+	// @version      1.0
+	// @description  Klikform API Service
+
+	// @securityDefinitions.apikey BearerAuth
+	// @in           header
+	// @name         Authorization
+
+	// @security     BearerAuth
+	// @accept       json
+	// @produce      json
+	// @param Authorization header string true "Bearer {token}"
 	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 	mux.HandleFunc("/swagger/doc.json", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./docs/swagger.json")

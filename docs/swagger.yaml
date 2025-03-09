@@ -1,3 +1,5 @@
+consumes:
+- application/json
 definitions:
   klikform_src_interfaces_v1_schemas_auths.AuthBodySchema:
     properties:
@@ -32,9 +34,9 @@ definitions:
     type: object
 info:
   contact: {}
-  description: KlikForm Service API Documentation
-  title: KlikForm Service
-  version: "0.1"
+  description: Klikform API Service
+  title: KlikForm API
+  version: "1.0"
 paths:
   /auth:
     post:
@@ -65,6 +67,23 @@ paths:
       summary: Authentication
       tags:
       - Auth
+  /roles:
+    get:
+      description: List of role available
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Failure response
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Role List
+      tags:
+      - Master - Roles
   /welcome:
     get:
       description: Welcome entry point to test API run
@@ -81,4 +100,13 @@ paths:
       summary: Welcome point
       tags:
       - Welcome
+produces:
+- application/json
+security:
+- BearerAuth: []
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
