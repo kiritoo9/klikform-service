@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"klikform/src/infras/configs"
 	"klikform/src/infras/databases/postgresql"
-	"klikform/src/infras/databases/postgresql/migrations"
-	"klikform/src/infras/databases/postgresql/seeders"
 	authroutes "klikform/src/interfaces/v1/routes/auths"
 	masterroutes "klikform/src/interfaces/v1/routes/masters"
 	welcomeroutes "klikform/src/interfaces/v1/routes/welcomes"
@@ -25,8 +23,10 @@ func main() {
 	// environments - database connections - migrations - seeders
 	conf := configs.LoadConfig()
 	postgresql.OpenDB() // run database connection
-	migrations.Migrations()
-	seeders.Seeders()
+
+	// uncomment this if you want to run migrations and seeders
+	// migrations.Migrations()
+	// seeders.Seeders()
 
 	// regist initiate routes
 	welcomeroutes.WelcomeRoutes(mux)
@@ -34,6 +34,7 @@ func main() {
 
 	// regist master routes
 	masterroutes.RoleRoutes(mux)
+	masterroutes.UserRoutes(mux)
 
 	// regist swagger
 	// for notes the route /swagger/doc.json is default json file loaded by swagger

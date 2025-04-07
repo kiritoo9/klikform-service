@@ -6,6 +6,11 @@ import (
 	"net/http"
 )
 
+// @Summary      Welcome point
+// @Description  Welcome entry point to test API run
+// @Tags         Welcome
+// @Success      200  {object} schemas.ResponseSchema{data=schemas.WelcomeResponseSchema} "Successful response"
+// @Router       /welcome [get]
 func WelcomeControllers(w http.ResponseWriter, r *http.Request) {
 	// load informations from configs
 	config := configs.LoadConfig()

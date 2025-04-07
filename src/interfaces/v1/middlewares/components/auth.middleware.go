@@ -26,7 +26,7 @@ func Auth() func(http.HandlerFunc) http.HandlerFunc {
 			// check valid token
 			configs := configs.LoadConfig()
 			claims := &jwt.MapClaims{}
-			token, err := jwt.ParseWithClaims(authorization, claims, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.ParseWithClaims(authorization, claims, func(token *jwt.Token) (any, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("done")
 				}
