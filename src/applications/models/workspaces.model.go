@@ -24,6 +24,8 @@ func (Workspaces) TableName() string {
 }
 
 func (workspace *Workspaces) BeforeCreate(tx *gorm.DB) (err error) {
-	workspace.ID = uuid.New()
+	if workspace.ID == uuid.Nil {
+		workspace.ID = uuid.New()
+	}
 	return
 }

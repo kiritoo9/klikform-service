@@ -16,7 +16,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var validate = validator.New()
+var userValidate = validator.New()
 
 // @Summary      User List
 // @Description  List of user available
@@ -132,7 +132,7 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = validate.Struct(body)
+	err = userValidate.Struct(body)
 	if err != nil {
 		utils.SetResponse(w, http.StatusBadRequest, "Error validation body", map[string]any{
 			"error": fmt.Sprintf("Validation error: %v", err),
@@ -215,7 +215,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = validate.Var(body.Password, "omitempty")
+	err = userValidate.Var(body.Password, "omitempty")
 	if err != nil {
 		utils.SetResponse(w, http.StatusBadRequest, "Error validation body", map[string]any{
 			"error": fmt.Sprintf("Validation error: %v", err),

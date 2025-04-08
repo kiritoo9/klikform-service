@@ -7,31 +7,29 @@ import (
 	"net/http"
 )
 
-// handle route based on method
-func userRouteMethodHandlers(w http.ResponseWriter, r *http.Request) {
+func workspaceRouteMethodHandlers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		mastercontrollers.UserList(w, r)
+		mastercontrollers.WorkspaceList(w, r)
 	case "POST":
-		mastercontrollers.UserCreate(w, r)
+		mastercontrollers.WorkspaceCreate(w, r)
 	case "PUT":
-		mastercontrollers.UserUpdate(w, r)
+		mastercontrollers.WorkspaceUpdate(w, r)
 	case "DELETE":
-		mastercontrollers.UserDelete(w, r)
+		mastercontrollers.WorkspaceDelete(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
-func UserRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/users", middlewares.Apply(
-		userRouteMethodHandlers,
+func WorkspaceRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("/workspaces", middlewares.Apply(
+		workspaceRouteMethodHandlers,
 		middlewarecomponents.Method([]string{"GET", "POST"}),
 		middlewarecomponents.Auth(),
 	))
-
-	mux.HandleFunc("/users/", middlewares.Apply(
-		userRouteMethodHandlers,
+	mux.HandleFunc("/workspaces/", middlewares.Apply(
+		workspaceRouteMethodHandlers,
 		middlewarecomponents.Method([]string{"GET", "PUT", "DELETE"}),
 		middlewarecomponents.Auth(),
 	))

@@ -1,8 +1,10 @@
 package middlewarecomponents
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	repos "klikform/src/applications/repos/masters"
 	"klikform/src/infras/configs"
 	"net/http"
 
@@ -42,8 +44,20 @@ func Auth() func(http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 
-			// allow this token
-			next(w, r)
+			// send user logged data into request context
+			var role string
+			userID := (*claims)["id"].(string)
+			userRole, err := repos.GetRoleByUser(userID)
+			if err == nil {
+				role = userRole.Role.Name
+			}
+
+			userClaims := map[string]any{
+				"id":   userID,
+				"role": role,
+			}
+			ctx := context.WithValue(r.Context(), "loggedToken", userClaims)
+			next(w, r.WithContext(ctx)) // pass with context
 		}
 	}
 }

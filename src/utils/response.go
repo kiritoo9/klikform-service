@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func SetResponse(w http.ResponseWriter, statusCode int, message string, data map[string]interface{}) {
+func SetResponse(w http.ResponseWriter, statusCode int, message string, data map[string]any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(map[string]any{

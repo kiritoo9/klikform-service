@@ -35,6 +35,7 @@ func main() {
 	// regist master routes
 	masterroutes.RoleRoutes(mux)
 	masterroutes.UserRoutes(mux)
+	masterroutes.WorkspaceRoutes(mux)
 
 	// regist swagger
 	// for notes the route /swagger/doc.json is default json file loaded by swagger

@@ -58,6 +58,34 @@ definitions:
       status:
         type: string
     type: object
+  klikform_src_interfaces_v1_schemas_masters.WorkspaceBodySchema:
+    properties:
+      descriptions:
+        type: string
+      remark:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    required:
+    - descriptions
+    - status
+    - title
+    type: object
+  klikform_src_interfaces_v1_schemas_masters.WorkspaceResponseSchema:
+    properties:
+      descriptions:
+        type: string
+      id:
+        type: string
+      remark:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
   schemas.ResponseSchema:
     properties:
       data: {}
@@ -283,6 +311,89 @@ paths:
       summary: Welcome point
       tags:
       - Welcome
+  /workspaces:
+    get:
+      description: List of workspace available
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Search keywords
+        in: query
+        name: keywords
+        type: string
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Failure response
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Workspace List
+      tags:
+      - Master - Workspaces
+    post:
+      consumes:
+      - application/json
+      description: Create new workspace
+      parameters:
+      - description: Workspace body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/klikform_src_interfaces_v1_schemas_masters.WorkspaceBodySchema'
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            allOf:
+            - $ref: '#/definitions/schemas.ResponseSchema'
+            - properties:
+                data:
+                  $ref: '#/definitions/klikform_src_interfaces_v1_schemas_masters.WorkspaceResponseSchema'
+              type: object
+        "400":
+          description: Failure response
+          schema:
+            $ref: '#/definitions/schemas.ResponseSchema'
+      summary: Workspace Create
+      tags:
+      - Master - Workspaces
+  /workspaces/{id}:
+    get:
+      description: Detail of workspace
+      parameters:
+      - description: ID of workspace
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Failure response
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Workspace Detail
+      tags:
+      - Master - Workspaces
 produces:
 - application/json
 security:

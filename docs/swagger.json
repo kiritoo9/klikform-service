@@ -332,6 +332,134 @@
                     }
                 }
             }
+        },
+        "/workspaces": {
+            "get": {
+                "description": "List of workspace available",
+                "tags": [
+                    "Master - Workspaces"
+                ],
+                "summary": "Workspace List",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search keywords",
+                        "name": "keywords",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Failure response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new workspace",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master - Workspaces"
+                ],
+                "summary": "Workspace Create",
+                "parameters": [
+                    {
+                        "description": "Workspace body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/klikform_src_interfaces_v1_schemas_masters.WorkspaceBodySchema"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/schemas.ResponseSchema"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/klikform_src_interfaces_v1_schemas_masters.WorkspaceResponseSchema"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Failure response",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.ResponseSchema"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/{id}": {
+            "get": {
+                "description": "Detail of workspace",
+                "tags": [
+                    "Master - Workspaces"
+                ],
+                "summary": "Workspace Detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of workspace",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Failure response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -416,6 +544,48 @@
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "klikform_src_interfaces_v1_schemas_masters.WorkspaceBodySchema": {
+            "type": "object",
+            "required": [
+                "descriptions",
+                "status",
+                "title"
+            ],
+            "properties": {
+                "descriptions": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "klikform_src_interfaces_v1_schemas_masters.WorkspaceResponseSchema": {
+            "type": "object",
+            "properties": {
+                "descriptions": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
