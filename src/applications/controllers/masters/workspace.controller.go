@@ -9,6 +9,7 @@ import (
 	"klikform/src/utils"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -87,6 +88,16 @@ func WorkspaceList(w http.ResponseWriter, r *http.Request) {
 // @Failure      400 {object} map[string]interface{} "Failure response"
 // @Router		 /workspaces/{id} [get]
 func WorkspaceDetail(w http.ResponseWriter, r *http.Request) {
+	// get logged data
+	token := r.Context().Value("loggedToken")
+	var userID string
+	role := token.(map[string]any)["role"].(string)
+	if strings.ToLower(role) == "admin" {
+		userID = token.(map[string]any)["id"].(string)
+	} else {
+		userID = ""
+	}
+
 	// get parameters
 	params := strings.TrimPrefix(r.URL.Path, "/workspaces/")
 	paths := strings.Split(params, "/")
@@ -97,7 +108,7 @@ func WorkspaceDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get detail from database
-	data, err := repos.GetWorkspaceById(id)
+	data, err := repos.GetWorkspaceById(id, userID)
 	if err != nil {
 		utils.SetResponse(w, http.StatusNotFound, err.Error(), nil)
 		return
@@ -182,12 +193,124 @@ func WorkspaceCreate(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// @Summary      Workspace Update
+// @Description  Update existing workspace
+// @Tags         Master - Workspaces
+// @Accept		 json
+// @Param        id  path  string  true  "ID of workspace"
+// @Param 		 request body schemas.WorkspaceBodySchema true "Workspace body"
+// @Success      204 "Successful response"
+// @Failure		 400  {object} schemas.ResponseSchema "Failure response"
+// @Router		 /workspaces/{id} [put]
 func WorkspaceUpdate(w http.ResponseWriter, r *http.Request) {
-	utils.SetResponse(w, http.StatusNoContent, "Request success", nil)
+	// get user logged
+	token := r.Context().Value("loggedToken")
+	var userID string
+	role := token.(map[string]any)["role"].(string)
+	if strings.ToLower(role) == "admin" {
+		userID = token.(map[string]any)["id"].(string)
+	} else {
+		userID = ""
+	}
+
+	// get parameters
+	params := strings.TrimPrefix(r.URL.Path, "/workspaces/")
+	paths := strings.Split(params, "/")
+	id := paths[0]
+	if id == "" {
+		utils.SetResponse(w, http.StatusBadRequest, "ID is required", nil)
+		return
+	}
+
+	// get body request
+	var body schemas.WorkspaceBodySchema
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		utils.SetResponse(w, http.StatusBadRequest, "Something went wrong", map[string]any{
+			"error": "Invalid JSON Body",
+		})
+		return
+	}
+
+	err = workspaceValidate.Struct(body)
+	if err != nil {
+		utils.SetResponse(w, http.StatusBadRequest, "Error validation body", map[string]any{
+			"error": fmt.Sprintf("Validation error: %v", err),
+		})
+		return
+	}
+
+	// get data workspace
+	workspace, err := repos.GetWorkspaceById(id, userID)
+	if err != nil {
+		utils.SetResponse(w, http.StatusNotFound, err.Error(), nil)
+		return
+	}
+
+	// updating data
+	workspace.Title = body.Title
+	workspace.Descriptions = body.Descriptions
+	workspace.Status = body.Status
+	workspace.Remark = body.Remark
+	workspace.UpdatedAt = time.Now()
+	_, err = repos.UpdateWorkspace(workspace)
+	if err != nil {
+		utils.SetResponse(w, http.StatusBadRequest, "Something went wrong", map[string]any{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// send response
+	utils.SetResponse(w, http.StatusNoContent, "Data updated", nil)
 	return
 }
 
+// @Summary      Workspace Delete
+// @Description  Delete existing workspace
+// @Tags         Master - Workspaces
+// @Param        id  path  string  true  "ID of workspace"
+// @Success      204 "Successful response"
+// @Failure      400 {object} map[string]interface{} "Failure response"
+// @Router		 /workspaces/{id} [delete]
 func WorkspaceDelete(w http.ResponseWriter, r *http.Request) {
-	utils.SetResponse(w, http.StatusNoContent, "Request success", nil)
+	token := r.Context().Value("loggedToken")
+	var userID string
+	role := token.(map[string]any)["role"].(string)
+	if strings.ToLower(role) == "admin" {
+		userID = token.(map[string]any)["id"].(string)
+	} else {
+		userID = ""
+	}
+
+	// get parameters
+	params := strings.TrimPrefix(r.URL.Path, "/workspaces/")
+	paths := strings.Split(params, "/")
+	id := paths[0]
+	if id == "" {
+		utils.SetResponse(w, http.StatusBadRequest, "ID is required", nil)
+		return
+	}
+
+	// get data workspace
+	workspace, err := repos.GetWorkspaceById(id, userID)
+	if err != nil {
+		utils.SetResponse(w, http.StatusNotFound, err.Error(), nil)
+		return
+	}
+
+	// updating workspace
+	workspace.Deleted = true
+	workspace.UpdatedAt = time.Now()
+	_, err = repos.UpdateWorkspace(workspace)
+	if err != nil {
+		utils.SetResponse(w, http.StatusBadRequest, "Something went wrong", map[string]any{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// send response
+	utils.SetResponse(w, http.StatusNoContent, "Data deleted", nil)
 	return
 }

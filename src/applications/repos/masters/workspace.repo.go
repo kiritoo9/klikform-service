@@ -50,12 +50,16 @@ func GetCountWorkspace(keywords string, userID string) (any, error) {
 	return count, nil
 }
 
-func GetWorkspaceById(id string) (any, error) {
+func GetWorkspaceById(id string, userID string) (*models.Workspaces, error) {
 	var workspace models.Workspaces
 	if postgresql.DB == nil {
 		return nil, errors.New("Database not initialized")
 	}
-	result := postgresql.DB.Where("deleted = ? AND id = ?", false, id).First(&workspace)
+	query := postgresql.DB.Where("deleted = ? AND id = ?", false, id)
+	if userID != "" {
+		query = query.Where("id IN (SELECT workspace_id FROM workspace_users WHERE deleted = ? AND user_id = ?)", false, userID)
+	}
+	result := query.First(&workspace)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			return nil, errors.New("Data is not found")
@@ -91,6 +95,20 @@ func CreateWorkspace(workspace models.Workspaces, workspaceUser models.Workspace
 	return &workspace, nil
 }
 
-func UpdateWorkspace() {
+func UpdateWorkspace(workspace *models.Workspaces) (*models.Workspaces, error) {
+	if postgresql.DB == nil {
+		return nil, errors.New("Database not initialized")
+	}
+	err := postgresql.DB.Transaction(func(tx *gorm.DB) error {
+		// update workspace
+		if err := tx.Save(&workspace).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 
+	if err != nil {
+		return nil, err
+	}
+	return workspace, nil
 }

@@ -467,6 +467,73 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Update existing workspace",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master - Workspaces"
+                ],
+                "summary": "Workspace Update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of workspace",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Workspace body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/klikform_src_interfaces_v1_schemas_masters.WorkspaceBodySchema"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Failure response",
+                        "schema": {
+                            "$ref": "#/definitions/schemas.ResponseSchema"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete existing workspace",
+                "tags": [
+                    "Master - Workspaces"
+                ],
+                "summary": "Workspace Delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of workspace",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Failure response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
             }
         }
     },

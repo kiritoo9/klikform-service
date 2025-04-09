@@ -10,7 +10,11 @@ import (
 func workspaceRouteMethodHandlers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		mastercontrollers.WorkspaceList(w, r)
+		if r.URL.Path == "/workspaces" {
+			mastercontrollers.WorkspaceList(w, r)
+		} else {
+			mastercontrollers.WorkspaceDetail(w, r)
+		}
 	case "POST":
 		mastercontrollers.WorkspaceCreate(w, r)
 	case "PUT":

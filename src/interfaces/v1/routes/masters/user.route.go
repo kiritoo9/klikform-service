@@ -11,7 +11,11 @@ import (
 func userRouteMethodHandlers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		mastercontrollers.UserList(w, r)
+		if r.URL.Path == "/users" {
+			mastercontrollers.UserList(w, r)
+		} else {
+			mastercontrollers.UserDetail(w, r)
+		}
 	case "POST":
 		mastercontrollers.UserCreate(w, r)
 	case "PUT":

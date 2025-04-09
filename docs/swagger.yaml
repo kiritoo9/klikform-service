@@ -372,6 +372,25 @@ paths:
       tags:
       - Master - Workspaces
   /workspaces/{id}:
+    delete:
+      description: Delete existing workspace
+      parameters:
+      - description: ID of workspace
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successful response
+        "400":
+          description: Failure response
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Workspace Delete
+      tags:
+      - Master - Workspaces
     get:
       description: Detail of workspace
       parameters:
@@ -392,6 +411,32 @@ paths:
             additionalProperties: true
             type: object
       summary: Workspace Detail
+      tags:
+      - Master - Workspaces
+    put:
+      consumes:
+      - application/json
+      description: Update existing workspace
+      parameters:
+      - description: ID of workspace
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Workspace body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/klikform_src_interfaces_v1_schemas_masters.WorkspaceBodySchema'
+      responses:
+        "204":
+          description: Successful response
+        "400":
+          description: Failure response
+          schema:
+            $ref: '#/definitions/schemas.ResponseSchema'
+      summary: Workspace Update
       tags:
       - Master - Workspaces
 produces:
